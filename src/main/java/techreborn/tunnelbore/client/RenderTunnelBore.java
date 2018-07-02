@@ -41,15 +41,15 @@ public class RenderTunnelBore extends TileEntitySpecialRenderer<TileTunnelboreCo
 		if (te.isMoving()) {
 			for (BlockData blockData : te.structure.getMovingBlocks()) {
 				renderBlock(blockData.getRenderState() != null ? blockData.getRenderState() : blockData.getBlockState(), blockData.getOldPos(), partialTicks, te, Minecraft.getMinecraft().world);
-				if (blockData.getTileEntity() != null) {
-					TileEntitySpecialRenderer renderer = TileEntityRendererDispatcher.instance.getRenderer(blockData.getTileEntity().getClass());
+				if (blockData.getTileEntity(Minecraft.getMinecraft().world) != null) {
+					TileEntitySpecialRenderer renderer = TileEntityRendererDispatcher.instance.getRenderer(blockData.getTileEntity(Minecraft.getMinecraft().world).getClass());
 					if (renderer != null) {
 						Vec3d offset = te.getTranslation().getOffset();
 						double dx = x - te.getPos().getX();
 						double dy = y - te.getPos().getY();
 						double dz = z - te.getPos().getZ();
 
-						renderer.render(blockData.getTileEntity(), blockData.getOldPos().getX() + offset.x + dx, blockData.getOldPos().getY() + offset.y + dy, blockData.getOldPos().getZ() + offset.z + dz, partialTicks, destroyStage, alpha);
+						renderer.render(blockData.getTileEntity(Minecraft.getMinecraft().world), blockData.getOldPos().getX() + offset.x + dx, blockData.getOldPos().getY() + offset.y + dy, blockData.getOldPos().getZ() + offset.z + dz, partialTicks, destroyStage, alpha);
 					}
 				}
 			}

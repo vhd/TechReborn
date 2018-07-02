@@ -2,6 +2,7 @@ package techreborn.tunnelbore;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -9,9 +10,9 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public class BlockData implements INBTSerializable<NBTTagCompound> {
 
-	final IBlockState blockState;
+	IBlockState blockState;
 	IBlockState renderState;
-	final BlockPos oldPos;
+	BlockPos oldPos;
 	TileEntity tileEntity;
 	NBTTagCompound tileData;
 
@@ -25,6 +26,10 @@ public class BlockData implements INBTSerializable<NBTTagCompound> {
 	public BlockData(IBlockState blockState, BlockPos oldPos) {
 		this.blockState = blockState;
 		this.oldPos = oldPos;
+	}
+
+	public BlockData(NBTTagCompound nbt){
+		deserializeNBT(nbt);
 	}
 
 	public static BlockData buildBlockData(World world, BlockPos pos) {
@@ -47,7 +52,12 @@ public class BlockData implements INBTSerializable<NBTTagCompound> {
 		this.tileData = tileData;
 	}
 
-	public TileEntity getTileEntity() {
+	public TileEntity getTileEntity(World world) {
+		if(tileEntity == null && tileData != null){
+			tileEntity = blockState.getBlock().createTileEntity(world, blockState);
+			tileEntity.setWorld(world);
+			tileEntity.readFromNBT(tileData);
+		}
 		return tileEntity;
 	}
 
@@ -63,15 +73,27 @@ public class BlockData implements INBTSerializable<NBTTagCompound> {
 		return oldPos;
 	}
 
-	//TODO
 	@Override
 	public NBTTagCompound serializeNBT() {
-		return new NBTTagCompound();
+		NBTTagCompound tagCompound = new NBTTagCompound();
+		tagCompound.setTag("blockState", NBTUtil.writeBlockState(new NBTTagCompound(), blockState));
+		tagCompound.setTag("renderState", NBTUtil.writeBlockState(new NBTTagCompound(), renderState));
+		tagCompound.setLong("oldPos", oldPos.toLong());
+		if(tileData != null){
+			tagCompound.setTag("tileData", tileData);
+		}
+		return tagCompound;
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-
+		blockState = NBTUtil.readBlockState(nbt.getCompoundTag("blockState"));
+		renderState = NBTUtil.readBlockState(nbt.getCompoundTag("renderState"));
+		oldPos = BlockPos.fromLong(nbt.getLong("oldPos"));
+		if(nbt.hasKey("tileData")){
+			tileData = (NBTTagCompound) nbt.getTag("tileData");
+			//TODO create a new tile and load its data?
+		}
 	}
 
 	@Override

@@ -1,16 +1,22 @@
 package techreborn.tunnelbore;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public class Translation {
+public class Translation implements INBTSerializable<NBTTagCompound> {
 
-	final EnumFacing direction;
+	EnumFacing direction;
 	double displacement;
 
 	public Translation(double displacement, EnumFacing direction) {
 		this.displacement = displacement;
 		this.direction = direction;
+	}
+
+	public Translation(NBTTagCompound tagCompound){
+		deserializeNBT(tagCompound);
 	}
 
 	public Translation(EnumFacing direction) {
@@ -35,5 +41,19 @@ public class Translation {
 
 	public Vec3d getOffset() {
 		return new Vec3d(direction.getFrontOffsetX() * displacement, direction.getFrontOffsetY() * displacement, direction.getFrontOffsetZ() * displacement);
+	}
+
+	@Override
+	public NBTTagCompound serializeNBT() {
+		NBTTagCompound tagCompound = new NBTTagCompound();
+		tagCompound.setInteger("direction", direction.ordinal());
+		tagCompound.setDouble("displacement", displacement);
+		return tagCompound;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound nbt) {
+		direction = EnumFacing.VALUES[nbt.getInteger("direction")];
+		displacement = nbt.getDouble("displacement");
 	}
 }

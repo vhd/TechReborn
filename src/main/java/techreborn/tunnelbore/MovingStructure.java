@@ -7,18 +7,24 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.INBTSerializable;
 import techreborn.init.ModBlocks;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MovingStructure {
+public class MovingStructure implements INBTSerializable<NBTTagCompound> {
 
 	public Translation translation;
 	TileTunnelboreController controller;
 	List<BlockData> movingBlocks;
 
 	public MovingStructure(TileTunnelboreController controller) {
+		this.controller = controller;
+	}
+
+	public MovingStructure(TileTunnelboreController controller, NBTTagCompound tagCompound) {
+		deserializeNBT(tagCompound);
 		this.controller = controller;
 	}
 
@@ -169,5 +175,28 @@ public class MovingStructure {
 		return controller.getWorld();
 	}
 
+	@Override
+	public NBTTagCompound serializeNBT() {
+		NBTTagCompound tagCompound = new NBTTagCompound();
+		tagCompound.setInteger("blocks", movingBlocks.size());
+		int i = 0;
+		for(BlockData blockData : movingBlocks){
+			tagCompound.setTag("block_" + i++, blockData.serializeNBT());
+		}
 
+		tagCompound.setTag("translation", translation.serializeNBT());
+		return tagCompound;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound nbt) {
+		translation = new Translation(nbt.getCompoundTag("translation"));
+		int blocks = nbt.getInteger("blocks");
+		List<BlockData> blockDataList = new ArrayList<>();
+		for (int b = 0; b < blocks; b++) {
+			NBTTagCompound tagCompound = nbt.getCompoundTag("block_" + b);
+			blockDataList.add(new BlockData(tagCompound));
+		}
+		movingBlocks = blockDataList;
+	}
 }

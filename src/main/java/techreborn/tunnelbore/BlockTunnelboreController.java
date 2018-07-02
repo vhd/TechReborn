@@ -36,12 +36,15 @@ public class BlockTunnelboreController extends BaseTileBlock {
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		TileTunnelboreController tunnelbore = (TileTunnelboreController) worldIn.getTileEntity(pos);
-		tunnelbore.boreDirection = facing.getOpposite();
-		if (playerIn.isSneaking()) {
-			//tunnelbore.currentState = TileTunnelboreController.BoreState.MINING;
-		} else {
-			tunnelbore.startMoving();
+		if(!worldIn.isRemote){
+			tunnelbore.boreDirection = facing.getOpposite();
+			if (playerIn.isSneaking()) {
+				//tunnelbore.currentState = TileTunnelboreController.BoreState.MINING;
+			} else {
+				tunnelbore.startMoving();
+			}
 		}
+
 
 		return true;
 	}
