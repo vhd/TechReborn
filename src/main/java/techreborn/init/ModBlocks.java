@@ -52,6 +52,8 @@ import techreborn.blocks.transformers.BlockLVTransformer;
 import techreborn.blocks.transformers.BlockMVTransformer;
 import techreborn.itemblocks.*;
 import techreborn.lib.ModInfo;
+import techreborn.tunnelbore.BlockTunnelboreController;
+import techreborn.tunnelbore.BlockTunnelboreSupport;
 
 /**
  * Registers all TR blocks
@@ -140,6 +142,8 @@ public class ModBlocks {
 	public static Block LAMP_LED;
 	public static Block ALARM;
 	public static Block FLUID_REPLICATOR;
+	public static Block TUNNEL_BORE_CONTROLLER;
+	public static Block TUNNEL_BORE_SUPPORT;
 
 	/**
 	 * Register blocks
@@ -372,6 +376,12 @@ public class ModBlocks {
 		
 		FLUID_REPLICATOR = new BlockFluidReplicator();
 		registerBlock(FLUID_REPLICATOR, "fluid_replicator");
+
+		TUNNEL_BORE_CONTROLLER = new BlockTunnelboreController();
+		registerBlock(TUNNEL_BORE_CONTROLLER, "tunnel_bore_controller");
+
+		TUNNEL_BORE_SUPPORT = new BlockTunnelboreSupport();
+		registerBlock(TUNNEL_BORE_SUPPORT, "tunnel_bore_support");
 
 		//TODO enable when done
 		//		flare = new BlockFlare();

@@ -52,6 +52,7 @@ import techreborn.tiles.tier1.*;
 import techreborn.tiles.transformers.TileHVTransformer;
 import techreborn.tiles.transformers.TileLVTransformer;
 import techreborn.tiles.transformers.TileMVTransformer;
+import techreborn.tunnelbore.TileTunnelboreController;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -114,11 +115,12 @@ public enum ModTileEntities {
 	PLASMA_GENERATOR(TilePlasmaGenerator.class,  "plasma_generator", "TilePlasmalGeneratorTR"),
 	LAMP(TileLamp.class,  "lamp", "TileLampTR"),
 	ALARM(TileAlarm.class,  "alarm", "TileAlarmTR"),
-	FLUID_REPLICATOR(TileFluidReplicator.class,  "fluid_replicator", "TileFluidReplicatorTR");
+	FLUID_REPLICATOR(TileFluidReplicator.class,  "fluid_replicator", "TileFluidReplicatorTR"),
+	TUNNEL_BORE_CONTROLLER(TileTunnelboreController.class, "tunnel_bore_controller");
 
 	public Class<? extends TileEntity> tileClass;
 	public ResourceLocation name;
-	public Optional<String> oldName;
+	public Optional<String> oldName; //TODO remove in 1.13
 
 	ModTileEntities(Class<? extends TileEntity> tileClass, ResourceLocation name, String oldName) {
 		this.tileClass = tileClass;
@@ -129,6 +131,7 @@ public enum ModTileEntities {
 	ModTileEntities(Class<? extends TileEntity> tileClass, ResourceLocation name) {
 		this.tileClass = tileClass;
 		this.name = name;
+		this.oldName = Optional.empty();
 	}
 
 	ModTileEntities(Class<? extends TileEntity> tileClass, String name, String oldName) {
@@ -157,6 +160,7 @@ public enum ModTileEntities {
 		return Optional.empty();
 	}
 
+	//TODO remove in 1.13
 	public static void initDataFixer(ModFixs dataFixes){
 		dataFixes.registerFix(FixTypes.BLOCK_ENTITY, new IFixableData() {
 			@Override
