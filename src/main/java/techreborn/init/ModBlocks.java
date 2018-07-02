@@ -53,6 +53,7 @@ import techreborn.blocks.transformers.BlockMVTransformer;
 import techreborn.itemblocks.*;
 import techreborn.lib.ModInfo;
 import techreborn.tunnelbore.BlockTunnelboreController;
+import techreborn.tunnelbore.BlockTunnelboreDrill;
 import techreborn.tunnelbore.BlockTunnelboreSupport;
 
 /**
@@ -144,6 +145,7 @@ public class ModBlocks {
 	public static Block FLUID_REPLICATOR;
 	public static Block TUNNEL_BORE_CONTROLLER;
 	public static Block TUNNEL_BORE_SUPPORT;
+	public static Block TUNNEL_BORE_DRILL;
 
 	/**
 	 * Register blocks
@@ -382,6 +384,9 @@ public class ModBlocks {
 
 		TUNNEL_BORE_SUPPORT = new BlockTunnelboreSupport();
 		registerBlock(TUNNEL_BORE_SUPPORT, "tunnel_bore_support");
+
+		TUNNEL_BORE_DRILL = new BlockTunnelboreDrill();
+		registerBlock(TUNNEL_BORE_DRILL, "tunnel_bore_drill");
 
 		//TODO enable when done
 		//		flare = new BlockFlare();

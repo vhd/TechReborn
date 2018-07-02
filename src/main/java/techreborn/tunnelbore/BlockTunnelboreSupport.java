@@ -21,7 +21,6 @@ public class BlockTunnelboreSupport extends Block {
 		ShootingStar.registerModel(new ModelCompound(ModInfo.MOD_ID, this, "tunnelbore"));
 	}
 
-
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
@@ -34,7 +33,7 @@ public class BlockTunnelboreSupport extends Block {
 	}
 
 	public boolean isFullCube() {
-		return false;
+		return true;
 	}
 
 }

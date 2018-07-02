@@ -9,20 +9,12 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public class BlockData implements INBTSerializable<NBTTagCompound> {
 
-	public static BlockData buildBlockData(World world, BlockPos pos){
-		BlockData blockData = new BlockData(world.getBlockState(pos), pos);
-		TileEntity tile = world.getTileEntity(pos);
-		if(tile != null){
-			blockData.tileData = tile.writeToNBT(new NBTTagCompound());
-			blockData.tileEntity = tile;
-		}
-		return blockData;
-	}
-
+	final IBlockState blockState;
+	IBlockState renderState;
+	final BlockPos oldPos;
 	TileEntity tileEntity;
 	NBTTagCompound tileData;
-	final IBlockState blockState;
-	final BlockPos oldPos;
+
 
 	public BlockData(NBTTagCompound tileData, IBlockState blockState, BlockPos oldPos) {
 		this.tileData = tileData;
@@ -35,12 +27,24 @@ public class BlockData implements INBTSerializable<NBTTagCompound> {
 		this.oldPos = oldPos;
 	}
 
-	public void setTileData(NBTTagCompound tileData) {
-		this.tileData = tileData;
+	public static BlockData buildBlockData(World world, BlockPos pos) {
+		BlockData blockData = new BlockData(world.getBlockState(pos), pos);
+		TileEntity tile = world.getTileEntity(pos);
+		IBlockState state = world.getBlockState(pos);
+		blockData.renderState = state.getBlock().getActualState(state, world, pos);
+		if (tile != null) {
+			blockData.tileData = tile.writeToNBT(new NBTTagCompound());
+			blockData.tileEntity = tile;
+		}
+		return blockData;
 	}
 
 	public NBTTagCompound getTileData() {
 		return tileData;
+	}
+
+	public void setTileData(NBTTagCompound tileData) {
+		this.tileData = tileData;
 	}
 
 	public TileEntity getTileEntity() {
@@ -49,6 +53,10 @@ public class BlockData implements INBTSerializable<NBTTagCompound> {
 
 	public IBlockState getBlockState() {
 		return blockState;
+	}
+
+	public IBlockState getRenderState() {
+		return renderState;
 	}
 
 	public BlockPos getOldPos() {
@@ -64,5 +72,13 @@ public class BlockData implements INBTSerializable<NBTTagCompound> {
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
 
+	}
+
+	@Override
+	public String toString() {
+		return "BlockData{" +
+			"blockState=" + blockState +
+			", tileData=" + tileData +
+			'}';
 	}
 }

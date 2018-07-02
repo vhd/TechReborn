@@ -54,6 +54,8 @@ import techreborn.events.StackToolTipEvent;
 import techreborn.init.ModBlocks;
 import techreborn.items.ItemFrequencyTransmitter;
 import techreborn.lib.ModInfo;
+import techreborn.tunnelbore.TileTunnelboreController;
+import techreborn.tunnelbore.client.RenderTunnelBore;
 
 public class ClientProxy extends CommonProxy {
 
@@ -84,6 +86,7 @@ public class ClientProxy extends CommonProxy {
 		ClientMultiBlocks.init();
 		StateMap rubberLeavesStateMap = new StateMap.Builder().ignore(BlockRubberLeaves.CHECK_DECAY, BlockRubberLeaves.DECAYABLE).build();
 		ModelLoader.setCustomStateMapper(ModBlocks.RUBBER_LEAVES, rubberLeavesStateMap);
+		ClientRegistry.bindTileEntitySpecialRenderer(TileTunnelboreController.class, new RenderTunnelBore());
 	}
 
 	@Override

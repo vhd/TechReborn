@@ -5,8 +5,8 @@ import net.minecraft.util.math.Vec3d;
 
 public class Translation {
 
-	double displacement;
 	final EnumFacing direction;
+	double displacement;
 
 	public Translation(double displacement, EnumFacing direction) {
 		this.displacement = displacement;
@@ -33,7 +33,7 @@ public class Translation {
 		return direction;
 	}
 
-	public Vec3d getOffset(){
+	public Vec3d getOffset() {
 		return new Vec3d(direction.getFrontOffsetX() * displacement, direction.getFrontOffsetY() * displacement, direction.getFrontOffsetZ() * displacement);
 	}
 }

@@ -53,6 +53,7 @@ import techreborn.tiles.transformers.TileHVTransformer;
 import techreborn.tiles.transformers.TileLVTransformer;
 import techreborn.tiles.transformers.TileMVTransformer;
 import techreborn.tunnelbore.TileTunnelboreController;
+import techreborn.tunnelbore.TileTunnelboreDrill;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -116,7 +117,8 @@ public enum ModTileEntities {
 	LAMP(TileLamp.class,  "lamp", "TileLampTR"),
 	ALARM(TileAlarm.class,  "alarm", "TileAlarmTR"),
 	FLUID_REPLICATOR(TileFluidReplicator.class,  "fluid_replicator", "TileFluidReplicatorTR"),
-	TUNNEL_BORE_CONTROLLER(TileTunnelboreController.class, "tunnel_bore_controller");
+	TUNNEL_BORE_CONTROLLER(TileTunnelboreController.class, "tunnel_bore_controller"),
+	TUNNEL_BORE_DRILL(TileTunnelboreDrill.class, "tunnel_bore_drill");
 
 	public Class<? extends TileEntity> tileClass;
 	public ResourceLocation name;
