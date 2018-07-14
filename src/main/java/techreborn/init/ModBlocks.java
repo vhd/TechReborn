@@ -55,6 +55,7 @@ import techreborn.lib.ModInfo;
 import techreborn.tunnelbore.BlockTunnelboreController;
 import techreborn.tunnelbore.BlockTunnelboreDrill;
 import techreborn.tunnelbore.BlockTunnelboreSupport;
+import techreborn.tunnelbore.misc.BlockFakeLight;
 
 /**
  * Registers all TR blocks
@@ -146,6 +147,7 @@ public class ModBlocks {
 	public static Block TUNNEL_BORE_CONTROLLER;
 	public static Block TUNNEL_BORE_SUPPORT;
 	public static Block TUNNEL_BORE_DRILL;
+	public static Block TUNNEL_BORE_FAKE_LIGHT;
 
 	/**
 	 * Register blocks
@@ -387,6 +389,9 @@ public class ModBlocks {
 
 		TUNNEL_BORE_DRILL = new BlockTunnelboreDrill();
 		registerBlock(TUNNEL_BORE_DRILL, "tunnel_bore_drill");
+
+		TUNNEL_BORE_FAKE_LIGHT = new BlockFakeLight();
+		registerBlockNoItem(TUNNEL_BORE_FAKE_LIGHT, "tunnel_bore_fake_light");
 
 		//TODO enable when done
 		//		flare = new BlockFlare();

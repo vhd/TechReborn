@@ -45,6 +45,8 @@ import techreborn.tiles.storage.TileLowVoltageSU;
 import techreborn.tiles.storage.TileMediumVoltageSU;
 import techreborn.tiles.tier0.*;
 import techreborn.tiles.tier1.*;
+import techreborn.tunnelbore.TileTunnelboreDrill;
+import techreborn.tunnelbore.client.GuiTunnelboreDrill;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -160,6 +162,8 @@ public class GuiHandler implements IGuiHandler {
 				return new GuiManual(player);
 			case FLUID_REPLICATOR:
 				return new GuiFluidReplicator(player, (TileFluidReplicator) tile);
+			case TUNNEL_BORE_DRILL:
+				return new GuiTunnelboreDrill(player, (TileTunnelboreDrill) tile);
 			default:
 				break;
 

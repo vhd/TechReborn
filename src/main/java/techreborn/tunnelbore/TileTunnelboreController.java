@@ -99,7 +99,6 @@ public class TileTunnelboreController extends TileEntity implements ITickable {
 		compound.setInteger("cooldown", cooldown);
 		compound.setInteger("boreDirection", boreDirection.ordinal());
 		compound.setInteger("currentState", currentState.ordinal());
-		System.out.println(compound);
 		return super.writeToNBT(compound);
 	}
 

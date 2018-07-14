@@ -118,7 +118,8 @@ public class GuiBase extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-		GuiSlotConfiguration.init(this);
+		if(enableSlotConfig())
+			GuiSlotConfiguration.init(this);
 	}
 
 	@Override
@@ -135,7 +136,8 @@ public class GuiBase extends GuiContainer {
 				upgrades = true;
 			}
 		}
-		builder.drawSlotTab(this, guiLeft, guiTop, mouseX, mouseY, upgrades);
+		if(enableSlotConfig())
+			builder.drawSlotTab(this, guiLeft, guiTop, mouseX, mouseY, upgrades);
 
 	}
 
@@ -152,7 +154,7 @@ public class GuiBase extends GuiContainer {
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		this.buttonList.clear();
 		drawTitle();
-		if(showSlotConfig){
+		if(showSlotConfig && enableSlotConfig()){
 			GuiSlotConfiguration.draw(this, mouseX, mouseY);
 		}
 
@@ -160,7 +162,7 @@ public class GuiBase extends GuiContainer {
 		if(!upgrades){
 			offset = 80;
 		}
-		if (builder.isInRect(guiLeft - 19, guiTop + 92 - offset, 12, 12, mouseX, mouseY)) {
+		if (builder.isInRect(guiLeft - 19, guiTop + 92 - offset, 12, 12, mouseX, mouseY) && enableSlotConfig()) {
 			List<String> list = new ArrayList<>();
 			list.add("Configure slots");
 			GuiUtils.drawHoveringText(list, mouseX - guiLeft  ,  mouseY - guiTop , width, height, -1, mc.fontRenderer);
@@ -211,7 +213,7 @@ public class GuiBase extends GuiContainer {
 
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-		if(showSlotConfig){
+		if(showSlotConfig && enableSlotConfig()){
 			if(GuiSlotConfiguration.mouseClicked(mouseX, mouseY, mouseButton, this)){
 				return;
 			}
@@ -221,7 +223,7 @@ public class GuiBase extends GuiContainer {
 
 	@Override
 	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-		if(showSlotConfig){
+		if(showSlotConfig && enableSlotConfig()){
 			GuiSlotConfiguration.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick, this);
 		}
 		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
@@ -233,13 +235,13 @@ public class GuiBase extends GuiContainer {
 		if(!upgrades){
 			offset = 80;
 		}
-		if(isPointInRegion(-26, 84 - offset, 30, 30, mouseX, mouseY)){
+		if(isPointInRegion(-26, 84 - offset, 30, 30, mouseX, mouseY) && enableSlotConfig()){
 			showSlotConfig = !showSlotConfig;
 			if(!showSlotConfig){
 				GuiSlotConfiguration.reset();
 			}
 		}
-		if(showSlotConfig){
+		if(showSlotConfig && enableSlotConfig()){
 			if(GuiSlotConfiguration.mouseReleased(mouseX, mouseY, state, this)){
 				return;
 			}
@@ -249,7 +251,7 @@ public class GuiBase extends GuiContainer {
 
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if(showSlotConfig){
+		if(showSlotConfig && enableSlotConfig()){
 			if(isCtrlKeyDown() && keyCode == Keyboard.KEY_C){
 				GuiSlotConfiguration.copyToClipboard();
 				return;
@@ -273,6 +275,10 @@ public class GuiBase extends GuiContainer {
 
 	public TileLegacyMachineBase getMachine(){
 		return (TileLegacyMachineBase) tile;
+	}
+
+	public boolean enableSlotConfig(){
+		return true;
 	}
 
 	//TODO

@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import techreborn.init.ModBlocks;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class MovingStructure implements INBTSerializable<NBTTagCompound> {
@@ -18,6 +19,7 @@ public class MovingStructure implements INBTSerializable<NBTTagCompound> {
 	public Translation translation;
 	TileTunnelboreController controller;
 	List<BlockData> movingBlocks;
+	List<LightData> lights;
 
 	public MovingStructure(TileTunnelboreController controller) {
 		this.controller = controller;
@@ -56,6 +58,18 @@ public class MovingStructure implements INBTSerializable<NBTTagCompound> {
 			.map(pos -> BlockData.buildBlockData(controller.getWorld(), pos))
 			.collect(Collectors.toList()));
 
+		lights = new ArrayList<>();
+
+		movingBlocks.forEach(new Consumer<BlockData>() {
+			@Override
+			public void accept(BlockData blockData) {
+				int lightValue = blockData.blockState.getBlock().getLightValue(blockData.blockState, controller.getWorld(), blockData.oldPos);
+				if(lightValue > 0){
+					lights.add(new LightData(blockData.oldPos, lightValue));
+				}
+			}
+		});
+
 		//Sorts the blocks so blocks that require support are removed first
 		movingBlocks.sort((o1, o2) -> {
 			int size1 = o1.getBlockState().getBlock().isFullCube(o1.getBlockState()) ? 1 : 0;
@@ -63,16 +77,16 @@ public class MovingStructure implements INBTSerializable<NBTTagCompound> {
 			return size1 - size2;
 		});
 
-		System.out.println(movingBlocks);
 
 		translation = new Translation(controller.boreDirection);
 
 		removeBlocks();
-
+		placeLights();
 		return true;
 	}
 
 	public void finishMoving() {
+		removeLights();
 		replaceBlocks();
 	}
 
@@ -81,6 +95,18 @@ public class MovingStructure implements INBTSerializable<NBTTagCompound> {
 			controller.getWorld().removeTileEntity(blockData.oldPos); //Remove the old tile before breaking to prevent items dropping
 			controller.getWorld().setBlockToAir(blockData.oldPos);
 		});
+	}
+
+	private void placeLights(){
+		for (LightData light : lights) {
+			controller.getWorld().setBlockState(light.pos, ModBlocks.TUNNEL_BORE_FAKE_LIGHT.getDefaultState()); //TODO set light value
+		}
+	}
+
+	private void removeLights(){
+		for (LightData light : lights) {
+			controller.getWorld().setBlockToAir(light.pos);
+		}
 	}
 
 	private void replaceBlocks() {
@@ -109,15 +135,16 @@ public class MovingStructure implements INBTSerializable<NBTTagCompound> {
 	}
 
 	public List<BlockPos> findBlockToMove() {
-		BlockPos startPos = controller.getPos().down();
+
 		List<BlockPos> blockToMove = new ArrayList<>();
 		List<BlockPos> checkedBlocks = new ArrayList<>();
 		Queue<BlockPos> blocksToScan = new PriorityQueue<>();
-		if (canMoveBlock(startPos)) {
-			blocksToScan.add(startPos);
-			blockToMove.add(startPos);
-		} else {
-			return Collections.emptyList();
+		for(EnumFacing facing : EnumFacing.VALUES){
+			BlockPos startPos = controller.getPos().offset(facing);
+			if (canMoveBlock(startPos)) {
+				blocksToScan.add(startPos);
+				blockToMove.add(startPos);
+			}
 		}
 		while (!blocksToScan.isEmpty()) {
 			BlockPos pos = blocksToScan.poll();
@@ -184,6 +211,12 @@ public class MovingStructure implements INBTSerializable<NBTTagCompound> {
 			tagCompound.setTag("block_" + i++, blockData.serializeNBT());
 		}
 
+		tagCompound.setInteger("lights", movingBlocks.size());
+		i = 0;
+		for(LightData lightData : lights){
+			tagCompound.setTag("light_" + i++, lightData.serializeNBT());
+		}
+
 		tagCompound.setTag("translation", translation.serializeNBT());
 		return tagCompound;
 	}
@@ -192,11 +225,45 @@ public class MovingStructure implements INBTSerializable<NBTTagCompound> {
 	public void deserializeNBT(NBTTagCompound nbt) {
 		translation = new Translation(nbt.getCompoundTag("translation"));
 		int blocks = nbt.getInteger("blocks");
-		List<BlockData> blockDataList = new ArrayList<>();
+		movingBlocks = new ArrayList<>();
 		for (int b = 0; b < blocks; b++) {
 			NBTTagCompound tagCompound = nbt.getCompoundTag("block_" + b);
-			blockDataList.add(new BlockData(tagCompound));
+			movingBlocks.add(new BlockData(tagCompound));
 		}
-		movingBlocks = blockDataList;
+		if(nbt.hasKey("lights")){
+			lights = new ArrayList<>();
+			for (int l = 0; l < nbt.getInteger("lights"); l++) {
+				NBTTagCompound tagCompound = nbt.getCompoundTag("light_" + l);
+				lights.add(new LightData(tagCompound));
+			}
+		}
+	}
+
+	private static class LightData implements INBTSerializable<NBTTagCompound> {
+		BlockPos pos;
+		int lightValue;
+
+		public LightData(BlockPos pos, int lightValue) {
+			this.pos = pos;
+			this.lightValue = lightValue;
+		}
+
+		public LightData(NBTTagCompound tagCompound){
+			deserializeNBT(tagCompound);
+		}
+
+		@Override
+		public NBTTagCompound serializeNBT() {
+			NBTTagCompound tagCompound = new NBTTagCompound();
+			tagCompound.setLong("pos", pos.toLong());
+			tagCompound.setInteger("lightValue", lightValue);
+			return tagCompound;
+		}
+
+		@Override
+		public void deserializeNBT(NBTTagCompound nbt) {
+			pos = BlockPos.fromLong(nbt.getLong("pos"));
+			lightValue = nbt.getInteger("lightValue");
+		}
 	}
 }

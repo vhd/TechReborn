@@ -6,8 +6,8 @@ import prospector.shootingstar.ShootingStar;
 import prospector.shootingstar.model.ModelCompound;
 import reborncore.api.tile.IMachineGuiHandler;
 import reborncore.common.blocks.BlockMachineBase;
+import techreborn.client.EGui;
 import techreborn.lib.ModInfo;
-import techreborn.tiles.tier1.TileGrinder;
 import techreborn.utils.TechRebornCreativeTab;
 
 public class BlockTunnelboreDrill  extends BlockMachineBase {
@@ -25,6 +25,6 @@ public class BlockTunnelboreDrill  extends BlockMachineBase {
 
 	@Override
 	public IMachineGuiHandler getGui() {
-		return null;
+		return EGui.TUNNEL_BORE_DRILL;
 	}
 }
