@@ -32,10 +32,12 @@ import reborncore.api.blockentity.IUpgrade;
 import reborncore.client.screen.BuiltScreenHandlerProvider;
 import reborncore.client.screen.builder.BuiltScreenHandler;
 import reborncore.client.screen.builder.ScreenHandlerBuilder;
+import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.util.RebornInventory;
 import techreborn.api.recipe.RecyclerRecipeCrafter;
 import techreborn.blockentity.machine.GenericMachineBlockEntity;
 import techreborn.config.TechRebornConfig;
+import techreborn.init.ModRecipes;
 import techreborn.init.TRBlockEntities;
 import techreborn.init.TRContent;
 
@@ -63,6 +65,6 @@ public class RecyclerBlockEntity extends GenericMachineBlockEntity implements Bu
 		return new ScreenHandlerBuilder("recycler").player(player.inventory).inventory().hotbar().addInventory()
 				.blockEntity(this).slot(0, 55, 45, RecyclerBlockEntity::canRecycle)
 				.outputSlot(1, 101, 45).energySlot(2, 8, 72).syncEnergyValue()
-				.addInventory().create(this, syncID);
+				.syncCrafterValue().addInventory().create(this, syncID);
 	}
 }
